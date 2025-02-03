@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 import { WORDS } from '../../data';
 import { sample } from '../../utils';
@@ -10,6 +10,11 @@ import GuessResults from '../GuessResults';
 const answer = sample(WORDS);
 // To make debugging easier, we'll log the solution in the console.
 console.info({ answer });
+const AnswerContext = createContext(answer);
+
+export function useAnswer() {
+  return useContext(AnswerContext);
+}
 
 function Game() {
   const [guesses, setGuesses] = useState([]);
@@ -20,8 +25,10 @@ function Game() {
 
   return (
     <>
-      <GuessInput addGuess={handleGuess} />
+    <AnswerContext.Provider value={answer}>
       <GuessResults guesses={guesses} />
+      <GuessInput addGuess={handleGuess} />
+      </AnswerContext.Provider>
     </>
   );
 }
