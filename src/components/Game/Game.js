@@ -12,14 +12,18 @@ const answer = sample(WORDS);
 console.info({ answer });
 
 function Game() {
-  const [guess, setGuess] = useState('');
   const [guesses, setGuesses] = useState([]);
 
   function handleGuess(guess) {
     setGuesses([...guesses, guess]);
   }
 
-  return <><GuessInput guess={guess} setGuess={setGuess} addGuess={handleGuess} /><GuessResults guesses={guesses} /></>;
+  return (
+    <>
+      <GuessInput addGuess={handleGuess} />
+      <GuessResults guesses={guesses} />
+    </>
+  );
 }
 
 export default Game;
