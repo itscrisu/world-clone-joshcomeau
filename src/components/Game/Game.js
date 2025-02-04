@@ -3,6 +3,9 @@ import React, { createContext, useContext, useState } from 'react';
 import { WORDS } from '../../data';
 import { sample } from '../../utils';
 
+import { NUM_OF_GUESSES_ALLOWED } from '../../constants';
+import GameLostDialog from '../GameLostDialog/GameLostDialog';
+import GameWonDialog from '../GameWonDialog';
 import GuessInput from '../GuessInput';
 import GuessResults from '../GuessResults';
 
@@ -17,10 +20,18 @@ export function useAnswer() {
 }
 
 function Game() {
+  const [userStatus, setUserStatus] = useState('playing');
   const [guesses, setGuesses] = useState([]);
 
   function handleGuess(guess) {
-    setGuesses([...guesses, guess]);
+    const nextGuesses = [...guesses, guess]
+    setGuesses(nextGuesses);
+
+    if(guess === answer) {
+      setUserStatus('won')
+    } else if(nextGuesses.length >= NUM_OF_GUESSES_ALLOWED) {
+      setUserStatus('lost')
+     }
   }
 
   return (
@@ -28,6 +39,8 @@ function Game() {
     <AnswerContext.Provider value={answer}>
       <GuessResults guesses={guesses} />
       <GuessInput addGuess={handleGuess} />
+      {userStatus === 'won' && <GameWonDialog numOfGuesses={guesses.length}/> }
+      {userStatus === 'lost' && <GameLostDialog />}
       </AnswerContext.Provider>
     </>
   );
